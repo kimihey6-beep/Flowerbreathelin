@@ -258,3 +258,99 @@
       }
       function getCurrentScale(){
         // baca terus daripada style var --base (sebab transform final sentiasa set ke base/current)
+        // tapi semasa animasi kita set secara explicit; fallback ke base jika parsing gagal
+        const m = /scale\(([^)]+)\)/.exec(wrap.style.transform||'');
+        return m ? parseFloat(m[1]) : base;
+      }
+
+      // ===== Kitaran 4-7-8 (dengan had selamat)
+      async function cycle(){
+        if(!running) return;
+
+        // clamp base kepada had dinamik (selamat)
+        base = Math.min(base, bloomMaxDyn);
+        wrap.style.setProperty('--base', base.toFixed(3));
+        updateMeter();
+
+        // Inhale: base → base*inhaleMul (namun hormat had muat)
+        const inhalePeak = Math.min(base*inhaleMul, bloomMaxDyn*inhaleMul); // walau base max, peak dikawal
+        setPhase(`Inhale <b>4</b>`);
+        await animateToScale(inhalePeak, inhale);
+
+        if(!running) return;
+
+        // Hold: kekalkan
+        setPhase(`Hold <b>7</b>`);
+        await animateToScale(inhalePeak, hold);
+
+        if(!running) return;
+
+        // Exhale: kembali ke base (bukan 0.95) → lebih stabil & “smooth”
+        setPhase(`Exhale <b>8</b>`);
+        await animateToScale(base, exhale);
+
+        if(!running) return;
+
+        // Tukar afirmasi pada tamat exhale
+        affirmEl.textContent = affirmations[idx % affirmations.length];
+        idx++;
+
+        // Selepas satu kitaran, naikkan base sedikit (cepat) tapi hormat had
+        base = Math.min(bloomMaxDyn, base + bloomStep);
+        wrap.style.setProperty('--base', base.toFixed(3));
+        updateMeter();
+
+        // kiraan nafas
+        breathCount += 1;
+        countEl.textContent = String(breathCount);
+
+        // Pulse kecil meraikan pertumbuhan (tanpa mengganggu next loop)
+        wrap.animate(
+          [{ transform:`scale(${base})` }, { transform:`scale(${base*1.025})` }, { transform:`scale(${base})` }],
+          { duration: 520, easing: 'ease-in-out', fill:'forwards' }
+        );
+
+        // sambung kitaran
+        cycle();
+      }
+
+      function start(){
+        if(running) return;
+        running = true;
+        startBtn.textContent = "Restart";
+        pauseBtn.disabled = false;
+
+        // Tetapkan transform ke base (elak mismatch bila user ubah saiz)
+        wrap.style.transform = `scale(${base})`;
+        cycle();
+      }
+      function pause(){
+        running = false;
+        pauseBtn.disabled = true;
+        setPhase("Paused");
+        // hentikan animasi aktif
+        wrap.getAnimations().forEach(a => a.cancel());
+        // pastikan transform selari dengan base
+        wrap.style.transform = `scale(${base})`;
+      }
+      function resetBloom(){
+        pause();
+        base = 0.8;
+        wrap.style.setProperty('--base', base.toFixed(3));
+        wrap.style.transform = `scale(${base})`;
+        updateMeter();
+        affirmEl.textContent = "";
+        setPhase("Ready?");
+        breathCount = 0;
+        countEl.textContent = "0";
+      }
+
+      startBtn.addEventListener('click', ()=>{ pause(); setPhase("Ready?"); affirmEl.textContent=""; setTimeout(start, 220); });
+      pauseBtn.addEventListener('click', pause);
+      resetBtn.addEventListener('click', resetBloom);
+
+      // Autofokus Start
+      window.addEventListener('load', ()=> startBtn.focus(), {once:true});
+    </script>
+  </body>
+</html>
