@@ -39,7 +39,7 @@
       @keyframes fadeDown{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
 
       .sub{ text-align:center; font-weight:700; color:var(--pink-soft); margin:0 0 6px; }
-      .hint{ text-align:center; font-size:12px; color:var(--muted); margin:0 0 10px }
+      .hint{ text-align:center; font-size:12px; color:#8a5fb3; margin:0 0 10px } /* sweet hint */
 
       .zone{
         position:relative; display:grid; place-items:center;
@@ -110,7 +110,7 @@
       <div class="card">
         <h1 class="title">Semangat Fadhlin</h1>
         <p class="sub">Be happy</p>
-        <p class="hint">Ambil nafas cara <b>4-7-8</b> sebanyak <b>3 kali</b>. Bunga takkan besar sampai tutup tulisan. 🌸</p>
+        <p class="hint">There is someone who always wants you to be happy.</p>
 
         <div class="zone" id="zone">
           <div class="flowerWrap" id="flowerWrap" style="--base:.8">
@@ -306,7 +306,6 @@
         running = false;
         pauseBtn.disabled = true;
         setPhase("Session complete");
-        // pastikan tiada animasi tertinggal
         wrap.getAnimations().forEach(a => a.cancel());
         wrap.style.transform = `scale(${base})`;
       }
