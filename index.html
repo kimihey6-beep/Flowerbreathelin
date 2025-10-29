@@ -1,321 +1,497 @@
 <!doctype html>
 <html lang="ms">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>For Fadhlin — Breathe & Bloom (3× 4-7-8)</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-      :root{
-        --bg1:#fff7fb; --bg2:#ffe9f6;
-        --text:#161617; --muted:#6a6a6a;
-        --pink:#ff4fa0; --pink-soft:#ff86bf;
-        --purple:#9b5de5; --purple-dark:#7b3ad7;
-      }
-      *{box-sizing:border-box}
-      html,body{height:100%;margin:0}
-      body{
-        font-family:Quicksand, system-ui, Segoe UI, Arial, sans-serif;
-        background:radial-gradient(80% 80% at 50% 20%, var(--bg2), var(--bg1));
-        color:var(--text); overflow:hidden;
-        -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-      }
-      .wrap{position:fixed; inset:0; display:grid; place-items:center; padding:16px}
-      .card{
-        position:relative; width:min(840px, 92vw); border-radius:22px;
-        background:#fff; box-shadow:0 16px 40px rgba(0,0,0,.12);
-        padding:28px 18px 22px; overflow:hidden;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For Fadhlin — Sunflower Breathe (Fluffy + Sunrays)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#fff7fb; --bg2:#ffe9f6;
+      --text:#161617; --muted:#6a6a6a;
+      --pink:#ff4fa0; --pink-soft:#ff86bf;
 
-      .title{
-        font-family:"Dancing Script", cursive; font-weight:700;
-        font-size:clamp(28px,6.4vw,56px); line-height:1.1;
-        color:var(--pink); text-align:center; margin:4px 8px 8px;
-        text-shadow:0 0 18px rgba(255,79,160,.22);
-        animation:fadeDown .7s ease-out both;
-      }
-      @keyframes fadeDown{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
+      /* Sunflower palette */
+      --sun-yellow:#ffc727;
+      --sun-yellow-deep:#f5a300;
+      --sun-brown:#5a3a1e;
+      --sun-brown-deep:#3f2817;
+      --leaf:#3ab971; --stem:#2e8b57;
+      --seed:#8b5a2b; --seed-hi:#b1773c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:Quicksand, system-ui, Segoe UI, Arial, sans-serif;
+      background:radial-gradient(80% 80% at 50% 20%, var(--bg2), var(--bg1));
+      color:var(--text); overflow:hidden;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    .wrap{position:fixed; inset:0; display:grid; place-items:center; padding:16px}
+    .card{
+      position:relative; width:min(880px, 94vw); border-radius:22px;
+      background:#fff; box-shadow:0 16px 40px rgba(0,0,0,.12);
+      padding:28px 18px 22px; overflow:hidden;
+    }
 
-      .sub{ text-align:center; font-weight:700; color:var(--pink-soft); margin:0 0 6px; }
-      .hint{ text-align:center; font-size:12px; color:#8a5fb3; margin:0 0 10px } /* sweet hint */
+    .title{
+      font-family:"Dancing Script", cursive; font-weight:700;
+      font-size:clamp(28px,6.4vw,56px); line-height:1.1;
+      color:var(--pink); text-align:center; margin:4px 8px 8px;
+      text-shadow:0 0 18px rgba(255,79,160,.22);
+      animation:fadeDown .7s ease-out both;
+    }
+    @keyframes fadeDown{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
 
-      .zone{
-        position:relative; display:grid; place-items:center;
-        height:min(54vh, 500px); margin:6px 0 8px; z-index:1;
-        padding:4px;
-      }
+    .sub{ text-align:center; font-weight:700; color:var(--pink-soft); margin:0 0 6px; }
+    .hint{ text-align:center; font-size:12px; color:#8a5fb3; margin:0 0 10px }
 
-      /* bunga */
-      .flowerWrap{
-        transform:scale(var(--base, .8)); transition:transform .8s cubic-bezier(.25,.8,.25,1);
-        filter:drop-shadow(0 14px 28px rgba(155,93,229,.22));
-        will-change:transform;
-      }
-      .flower{
-        width:min(360px, 70vmin); aspect-ratio:1/1; position:relative;
-        opacity:.98;
-      }
-      .petal{
-        position:absolute; inset:0; display:grid; place-items:center;
-        transform:rotate(var(--r,0deg));
-      }
-      .petal > span{
-        width:52%; height:52%;
-        border-radius:45% 55% 45% 55% / 55% 45% 55% 45%;
-        background:
-          radial-gradient(ellipse at 30% 30%, #fff 0 18%, transparent 19%),
-          radial-gradient(circle at 70% 70%, rgba(255,255,255,.4) 0 18%, transparent 19%),
-          linear-gradient(180deg, rgba(155,93,229,.88), rgba(155,93,229,.68));
-        box-shadow:inset 0 0 10px rgba(255,255,255,.25);
-      }
-      .centerDot{ position:absolute; inset:0; display:grid; place-items:center }
-      .centerDot::before{
-        content:""; width:22%; aspect-ratio:1; border-radius:50%;
-        background:radial-gradient(circle at 35% 35%, #ffe 0 20%, transparent 21%), #7b3ad7;
-        box-shadow:0 4px 12px rgba(0,0,0,.15) inset;
-      }
-      .ring{ position:absolute; inset:6%; border-radius:50%; border:2px dashed rgba(123,58,215,.2) }
+    .zone{
+      position:relative; display:grid; place-items:center;
+      height:min(56vh, 520px); margin:6px 0 8px; z-index:1;
+      padding:4px;
+    }
 
-      /* teks fasa & mesej */
-      .phase{ margin-top:10px; text-align:center; font-weight:700; }
-      .phase b{ color:var(--purple-dark) }
-      .affirm{ text-align:center; font-size:14px; color:#4a4a4a; margin-top:6px; min-height:1.5em }
+    /* Scale container (breathing) */
+    .plantWrap{
+      transform:scale(var(--base,.8)); transition:transform .8s cubic-bezier(.25,.8,.25,1);
+      filter:drop-shadow(0 14px 28px rgba(0,0,0,.10));
+      will-change:transform, filter;
+    }
+    .plant{ width:min(420px, 76vmin); aspect-ratio:1/1; position:relative; }
 
-      .controls{ display:flex; justify-content:center; gap:10px; margin-top:12px; flex-wrap:wrap }
-      .btn{
-        background:linear-gradient(180deg, #ff8ec4, #ff5ea8);
-        color:#fff; border:none; border-radius:999px; padding:10px 16px;
-        font-weight:700; cursor:pointer; box-shadow:0 10px 20px rgba(255,94,168,.25);
-      }
-      .btn.secondary{
-        background:#fff; color:#ff5ea8; border:2px solid #ff5ea8;
-      }
-      .btn:active{ transform:translateY(1px) }
+    /* Sunrays (appear on bloom) */
+    .rays{
+      position:absolute; inset:-6%; display:grid; place-items:center; pointer-events:none;
+      transform:scale(var(--rs,.4)) rotate(0deg);
+      opacity:var(--ro,0);
+      transition:transform .8s ease, opacity .8s ease, filter .8s ease;
+      filter:blur(8px) saturate(1.15);
+      mix-blend-mode:screen;
+      z-index:0;
+    }
+    .rays::before{
+      content:"";
+      width:135%; aspect-ratio:1; border-radius:50%;
+      /* repeating rays + masked inner hole */
+      background:
+        repeating-conic-gradient(from 0deg,
+          rgba(255,199,39,.00) 0deg 10deg,
+          rgba(255,199,39,.45) 12deg 16deg),
+        radial-gradient(circle at 50% 50%, rgba(255,199,39,.35) 60%, rgba(255,199,39,.0) 72%);
+      -webkit-mask: radial-gradient(circle, transparent 0 54%, #000 56% 100%);
+              mask: radial-gradient(circle, transparent 0 54%, #000 56% 100%);
+      animation:spin 24s linear infinite;
+      box-shadow:0 0 80px 10px rgba(255,199,39,.25);
+    }
+    @keyframes spin{ to{ transform:rotate(360deg) } }
 
-      .meters{
-        display:flex; gap:14px; justify-content:center; align-items:center;
-        margin-top:6px; flex-wrap:wrap; color:#6a6a6a; font-size:12px;
-      }
-      .count b{ color:var(--pink) }
+    /* Seed & sprout */
+    .seed{
+      position:absolute; left:50%; top:60%; transform:translate(-50%,-50%) scale(var(--ss,.95));
+      width:22%; aspect-ratio:0.75/1; border-radius:50% 50% 45% 45% / 58% 58% 42% 42%;
+      background:radial-gradient(ellipse at 35% 30%, var(--seed-hi) 0 28%, transparent 29%), var(--seed);
+      box-shadow:inset 0 -4px 8px #0003, 0 2px 6px #0002;
+      opacity:var(--so,1); transition:transform .6s ease, opacity .6s ease, filter .4s ease;
+      animation:seedPulse 2.2s ease-in-out infinite;
+      z-index:2;
+    }
+    @keyframes seedPulse{ 0%,100%{ filter:brightness(1) } 50%{ filter:brightness(1.08) } }
+    .sprout{
+      position:absolute; left:50%; bottom:31%; transform:translateX(-50%) scaleY(var(--st,0));
+      width:8px; height:38%; background:var(--stem); border-radius:999px;
+      box-shadow:inset 0 -10px 12px #0002;
+      transform-origin:bottom center; opacity:var(--sop,0);
+      transition:transform .7s ease, opacity .7s ease;
+      z-index:1;
+    }
+    .leaf{
+      position:absolute; width:28%; aspect-ratio:1/0.7; background:var(--leaf);
+      border-radius:60% 40% 60% 40% / 60% 40% 60% 40%;
+      top:50%; transform-origin:left center; opacity:var(--lop,0);
+      box-shadow:inset 0 0 10px #fff3;
+      transition:transform .6s ease, opacity .6s ease;
+      z-index:1;
+    }
+    .leaf.l1{ left:50%; transform:translate(8%,-50%) rotate(-16deg) scale(var(--ls,0)); }
+    .leaf.l2{ left:50%; transform:translate(-108%,-54%) rotate(16deg) scale(var(--ls,0)); }
 
-      @media (max-width:520px){
-        .card{border-radius:18px}
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="card">
-        <h1 class="title">Semangat Fadhlin</h1>
-        <p class="sub">Be happy</p>
-        <p class="hint">There is someone who always wants you to be happy.</p>
+    /* Petals (outer & inner rings for fluffiness) */
+    .petal{
+      position:absolute; inset:0; display:grid; place-items:center;
+      transform:rotate(var(--r,0deg)) translateY(var(--ty,-10%)) scale(var(--ps,.3));
+      transform-origin:center 60%;
+      opacity:var(--po,0);
+      transition:transform .6s ease, opacity .6s ease, filter .6s ease;
+      filter:saturate(var(--sat,.3)) brightness(var(--bri,.9));
+      z-index:2;
+    }
+    .petal > span{
+      width:calc(30% * var(--size,1)); height:calc(48% * var(--size,1));
+      border-radius:50% 50% 48% 48% / 60% 60% 40% 40%;
+      background:
+        radial-gradient(ellipse at 30% 30%, #fff8 0 15%, transparent 16%),
+        linear-gradient(180deg, var(--sun-yellow) 0%, var(--sun-yellow-deep) 95%);
+      box-shadow:0 3px 8px rgba(0,0,0,.14), inset 0 -5px 10px rgba(0,0,0,.08);
+    }
+    .petal.inner > span{
+      width:calc(26% * var(--size,1));
+      height:calc(42% * var(--size,1));
+    }
 
-        <div class="zone" id="zone">
-          <div class="flowerWrap" id="flowerWrap" style="--base:.8">
-            <div class="flower" id="flower" aria-label="Breathing flower">
-              <!-- 8 kelopak -->
-              <div class="petal" style="--r:0deg"><span></span></div>
-              <div class="petal" style="--r:45deg"><span></span></div>
-              <div class="petal" style="--r:90deg"><span></span></div>
-              <div class="petal" style="--r:135deg"><span></span></div>
-              <div class="petal" style="--r:180deg"><span></span></div>
-              <div class="petal" style="--r:225deg"><span></span></div>
-              <div class="petal" style="--r:270deg"><span></span></div>
-              <div class="petal" style="--r:315deg"><span></span></div>
-              <div class="centerDot"></div>
-              <div class="ring"></div>
-            </div>
+    /* Center disk */
+    .disk{
+      position:absolute; inset:0; display:grid; place-items:center;
+      transform:scale(var(--cs,.3)); opacity:var(--co,0);
+      transition:transform .6s ease, opacity .6s ease, filter .6s ease;
+      filter:saturate(var(--sat,.3)) brightness(var(--bri,.9));
+      z-index:3;
+    }
+    .disk::before{
+      content:"";
+      width:38%; aspect-ratio:1; border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 50%, #0000 0 46%, rgba(255,255,255,.08) 47% 52%, #0000 53% 100%),
+        repeating-radial-gradient(circle at 45% 45%, #0000 0 6.5px, rgba(0,0,0,.06) 7px 9.5px),
+        radial-gradient(circle at 50% 50%, var(--sun-brown) 0%, var(--sun-brown-deep) 68%);
+      box-shadow:0 4px 12px rgba(0,0,0,.2) inset, 0 0 0 0 rgba(255,199,39,0);
+    }
+
+    .ring{ position:absolute; inset:2%; border-radius:50%; border:2px dashed #00000012; z-index:0 }
+
+    /* Glow when fully fresh */
+    .fresh .disk::before{ box-shadow:0 4px 12px rgba(0,0,0,.2) inset, 0 0 42px 10px rgba(255,199,39,.38) }
+    .fresh .plantWrap{ filter:drop-shadow(0 20px 42px rgba(255,199,39,.34)) }
+    .fresh .rays{ --rs:1; --ro:1 }
+
+    /* texts & buttons */
+    .phase{ margin-top:10px; text-align:center; font-weight:700; }
+    .phase b{ color:#7b3ad7 }
+    .affirm{ text-align:center; font-size:14px; color:#4a4a4a; margin-top:6px; min-height:1.5em }
+
+    .controls{ display:flex; justify-content:center; gap:10px; margin-top:12px; flex-wrap:wrap }
+    .btn{
+      background:linear-gradient(180deg, #ff8ec4, #ff5ea8);
+      color:#fff; border:none; border-radius:999px; padding:10px 16px;
+      font-weight:700; cursor:pointer; box-shadow:0 10px 20px rgba(255,94,168,.25);
+    }
+    .btn.secondary{ background:#fff; color:#ff5ea8; border:2px solid #ff5ea8 }
+    .btn:active{ transform:translateY(1px) }
+
+    .meters{
+      display:flex; gap:14px; justify-content:center; align-items:center;
+      margin-top:6px; flex-wrap:wrap; color:#6a6a6a; font-size:12px;
+    }
+    .count b{ color:var(--pink) }
+
+    @media (max-width:520px){ .card{border-radius:18px} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="card">
+      <h1 class="title">Semangat Fadhlin</h1>
+      <p class="sub">Be happy</p>
+      <p class="hint">There is someone who always wants you to be happy.</p>
+
+      <div class="zone" id="zone">
+        <div class="plantWrap" id="plantWrap" style="--base:.8">
+          <div class="plant" id="plant" aria-label="Breathing sunflower">
+            <!-- Sunrays -->
+            <div class="rays" id="rays"></div>
+            <!-- Seed & sprout -->
+            <div class="seed" id="seed"></div>
+            <div class="sprout" id="sprout"></div>
+            <div class="leaf l1" id="leaf1"></div>
+            <div class="leaf l2" id="leaf2"></div>
+            <!-- petals + disk generated by JS -->
+            <div class="ring"></div>
           </div>
         </div>
+      </div>
 
-        <div class="phase" id="phase">Take a short rest. Let’s have three good breaths.</div>
-        <div class="affirm" id="affirm"></div>
+      <div class="phase" id="phase">Take a short rest. Let’s have three good breaths.</div>
+      <div class="affirm" id="affirm"></div>
 
-        <div class="controls">
-          <button class="btn" id="startBtn">Start</button>
-          <button class="btn secondary" id="pauseBtn" disabled>Pause</button>
-          <button class="btn secondary" id="resetBtn">Reset</button>
-        </div>
-        <div class="meters">
-          <div class="count" id="countLabel">Count breath: <b id="countNum">0</b>/3</div>
-          <div class="count" id="meter">Bloom level: 0%</div>
-        </div>
+      <div class="controls">
+        <button class="btn" id="startBtn">Start</button>
+        <button class="btn secondary" id="pauseBtn" disabled>Pause</button>
+        <button class="btn secondary" id="resetBtn">Reset</button>
+      </div>
+      <div class="meters">
+        <div class="count" id="countLabel">Count breath: <b id="countNum">0</b>/3</div>
+        <div class="count" id="meter">Bloom level: 0%</div>
       </div>
     </div>
+  </div>
 
-    <script>
-      const zone = document.getElementById('zone');
-      const wrap = document.getElementById('flowerWrap');
-      const phaseEl = document.getElementById('phase');
-      const affirmEl = document.getElementById('affirm');
-      const startBtn = document.getElementById('startBtn');
-      const pauseBtn = document.getElementById('pauseBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      const meterEl = document.getElementById('meter');
-      const countNumEl = document.getElementById('countNum');
+  <script>
+    const zone = document.getElementById('zone');
+    const card = document.getElementById('card');
+    const wrap = document.getElementById('plantWrap');
+    const plant = document.getElementById('plant');
+    const rays = document.getElementById('rays');
+    const seed = document.getElementById('seed');
+    const sprout = document.getElementById('sprout');
+    const leaf1 = document.getElementById('leaf1');
+    const leaf2 = document.getElementById('leaf2');
 
-      // Timing 4-7-8
-      const inhale = 4000, hold = 7000, exhale = 8000;
+    const phaseEl = document.getElementById('phase');
+    const affirmEl = document.getElementById('affirm');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const meterEl = document.getElementById('meter');
+    const countNumEl = document.getElementById('countNum');
 
-      // Bloom cumulative (terkawal)
-      let base = 0.8;
-      let bloomMaxDyn = 1.6;
-      const inhaleMul = 1.15;
-      const bloomStep = 0.10;
+    /* Build FLUFFY sunflower (outer + inner ring) */
+    const OUTER = 24, INNER = 16;  // total 40 petals
+    function makePetal(angleDeg, cls, size=1, ty='-12%'){
+      const p = document.createElement('div');
+      p.className = `petal ${cls}`;
+      p.style.setProperty('--r', `${angleDeg}deg`);
+      p.style.setProperty('--ps', .3);
+      p.style.setProperty('--po', 0);
+      p.style.setProperty('--sat', .3);
+      p.style.setProperty('--bri', .9);
+      p.style.setProperty('--size', size);
+      p.style.setProperty('--ty', ty);
+      p.innerHTML = '<span></span>';
+      plant.appendChild(p);
+      return p;
+    }
+    const outerPetals = [];
+    for(let i=0;i<OUTER;i++){
+      const jitter = (Math.random()*6-3); // slight twist for organic look
+      outerPetals.push(makePetal(i*(360/OUTER)+jitter, 'outer', 1.12, '-12%'));
+    }
+    const innerPetals = [];
+    for(let i=0;i<INNER;i++){
+      const jitter = (Math.random()*6-3);
+      innerPetals.push(makePetal(i*(360/INNER)+jitter+(360/INNER)/2, 'inner', 0.95, '-6%'));
+    }
+    const disk = document.createElement('div');
+    disk.className = 'disk';
+    disk.style.setProperty('--cs', .3);
+    disk.style.setProperty('--co', 0);
+    disk.style.setProperty('--sat', .3);
+    disk.style.setProperty('--bri', .9);
+    plant.appendChild(disk);
 
-      // Kitaran terhad 3 kali
-      const MAX_BREATHS = 3;
-      let breathCount = 0;
+    const ALL_PETALS = [...outerPetals, ...innerPetals];
 
-      // State
-      let running = false;
+    // 4-7-8 timing
+    const inhale = 4000, hold = 7000, exhale = 8000;
 
-      // ===== Kira had maksimum dinamik (tak tutup tulisan)
-      function computeMaxBloom(){
-        const flower = document.getElementById('flower');
-        const flowerW = flower.offsetWidth, flowerH = flower.offsetHeight;
-        const pad = 12;
-        const zoneW = zone.clientWidth - pad*2;
-        const zoneH = zone.clientHeight - pad*2;
-        const targetFit = 0.9 * Math.min(zoneW/flowerW, zoneH/flowerH);
-        const maxBaseByFit = targetFit / inhaleMul;
-        bloomMaxDyn = Math.max(0.7, Math.min(2.0, maxBaseByFit));
-        if(base > bloomMaxDyn){
-          base = bloomMaxDyn;
-          wrap.style.setProperty('--base', base.toFixed(3));
-          updateMeter();
+    // breathing scale
+    let base = 0.8;
+    let maxBaseDyn = 1.6;     // computed by space
+    const inhaleMul = 1.15;
+    const bloomStep = 0.10;
+
+    // cycles
+    const MAX_BREATHS = 3;
+    let breathCount = 0;
+    let running = false;
+
+    // Auto size cap
+    function computeMaxBase(){
+      const plantW = plant.offsetWidth, plantH = plant.offsetHeight;
+      const pad = 12;
+      const zoneW = zone.clientWidth - pad*2;
+      const zoneH = zone.clientHeight - pad*2;
+      const fit = 0.9 * Math.min(zoneW/plantW, zoneH/plantH);
+      const cap = fit / inhaleMul;
+      maxBaseDyn = Math.max(0.7, Math.min(2.0, cap));
+      if(base > maxBaseDyn){
+        base = maxBaseDyn;
+        wrap.style.setProperty('--base', base.toFixed(3));
+        updateMeter();
+      }
+    }
+    new ResizeObserver(computeMaxBase).observe(zone);
+    window.addEventListener('load', computeMaxBase);
+
+    function setPhase(t){ phaseEl.innerHTML = t; }
+    function setAffirm(t){ affirmEl.textContent = t; }
+    function updateMeter(){
+      const pct = Math.round(((base - 0.8) / (maxBaseDyn - 0.8)) * 100);
+      meterEl.textContent = `Bloom level: ${Math.max(0, Math.min(100, pct))}%`;
+    }
+    updateMeter();
+
+    function animateToScale(target, duration){
+      return new Promise(res=>{
+        const anim = wrap.animate(
+          [{ transform:`scale(${getCurrentScale()})` }, { transform:`scale(${target})` }],
+          { duration, easing:'cubic-bezier(.25,.8,.25,1)', fill:'forwards' }
+        );
+        anim.onfinish = ()=>{ wrap.style.transform = `scale(${target})`; res(); };
+      });
+    }
+    function getCurrentScale(){
+      const m = /scale\(([^)]+)\)/.exec(wrap.style.transform||'');
+      return m ? parseFloat(m[1]) : base;
+    }
+
+    /* Progressive visuals: seed → sprout → sunflower + sunrays
+       progress ∈ [0,1] */
+    function setGrowth(progress){
+      const total = ALL_PETALS.length;
+      const reveal = Math.round(progress * total);
+
+      // Seed/sprout
+      if(progress <= 0.05){
+        seed.style.setProperty('--so', 1);
+        seed.style.setProperty('--ss', .95);
+        sprout.style.setProperty('--st', 0);
+        sprout.style.setProperty('--sop', 0);
+        leaf1.style.setProperty('--ls', 0); leaf2.style.setProperty('--ls', 0);
+        leaf1.style.setProperty('--lop', 0); leaf2.style.setProperty('--lop', 0);
+      } else if(progress <= 0.35){
+        seed.style.setProperty('--ss', .9);
+        seed.style.filter = 'brightness(1.05)';
+        sprout.style.setProperty('--st', .45);
+        sprout.style.setProperty('--sop', .95);
+        leaf1.style.setProperty('--ls', .72); leaf2.style.setProperty('--ls', .72);
+        leaf1.style.setProperty('--lop', .95); leaf2.style.setProperty('--lop', .95);
+      } else if(progress < 1){
+        seed.style.setProperty('--so', .35);
+        sprout.style.setProperty('--st', .98);
+        sprout.style.setProperty('--sop', 1);
+        leaf1.style.setProperty('--ls', 1); leaf2.style.setProperty('--ls', 1);
+        leaf1.style.setProperty('--lop', 1); leaf2.style.setProperty('--lop', 1);
+      } else {
+        seed.style.setProperty('--so', 0);
+        sprout.style.setProperty('--st', 1);
+        sprout.style.setProperty('--sop', 1);
+        leaf1.style.setProperty('--ls', 1); leaf2.style.setProperty('--ls', 1);
+        leaf1.style.setProperty('--lop', 1); leaf2.style.setProperty('--lop', 1);
+      }
+
+      // Petals reveal
+      ALL_PETALS.forEach((p,i)=>{
+        const shown = i < reveal;
+        p.style.setProperty('--po', shown ? 1 : 0);
+        p.style.setProperty('--ps', shown ? (0.95 + progress*0.2) : 0.3);
+        p.style.setProperty('--sat', shown ? (0.8 + progress*0.2) : 0.3);
+        p.style.setProperty('--bri', shown ? (1.0 + progress*0.08) : 0.9);
+        if(shown && !p.dataset.appeared){
+          p.dataset.appeared = '1';
+          p.animate(
+            [{ transform:`rotate(var(--r)) translateY(var(--ty)) scale(.65)`, opacity:.0 },
+             { transform:`rotate(var(--r)) translateY(var(--ty)) scale(1.05)`, opacity:1, offset:.75 },
+             { transform:`rotate(var(--r)) translateY(var(--ty)) scale(1)`, opacity:1 }],
+            { duration: 500, easing: 'ease-out', fill:'forwards' }
+          );
         }
-      }
-      new ResizeObserver(computeMaxBloom).observe(zone);
-      window.addEventListener('load', computeMaxBloom);
+      });
 
-      function setPhase(txt){ phaseEl.innerHTML = txt; }
-      function setAffirm(txt){ affirmEl.textContent = txt; }
-      function updateMeter(){
-        const pct = Math.round(((base - 0.8) / (bloomMaxDyn - 0.8)) * 100);
-        meterEl.textContent = `Bloom level: ${Math.max(0, Math.min(100, pct))}%`;
-      }
+      // Center disk
+      const showDisk = progress >= 0.35 ? 1 : 0;
+      disk.style.setProperty('--co', showDisk);
+      disk.style.setProperty('--cs', showDisk ? (0.9 + progress*0.22) : 0.3);
+      disk.style.setProperty('--sat', showDisk ? (0.75 + progress*0.25) : 0.3);
+      disk.style.setProperty('--bri', showDisk ? (1.0 + progress*0.08) : 0.9);
+
+      // Rays appear near full bloom
+      const raysOn = Math.max(0, (progress - 0.85) / 0.15); // 0→1 from 85%→100%
+      rays.style.setProperty('--ro', raysOn.toFixed(3));
+      rays.style.setProperty('--rs', (0.6 + raysOn*0.5).toFixed(3));
+
+      if(progress >= 0.999) card.classList.add('fresh'); else card.classList.remove('fresh');
+    }
+    setGrowth(0); // start with seed visible
+
+    async function doOne478(){
+      base = Math.min(base, maxBaseDyn);
+      wrap.style.setProperty('--base', base.toFixed(3));
       updateMeter();
 
-      function animateToScale(targetScale, duration){
-        return new Promise(resolve=>{
-          const anim = wrap.animate(
-            [{ transform:`scale(${getCurrentScale()})` }, { transform:`scale(${targetScale})` }],
-            { duration, easing: 'cubic-bezier(.25,.8,.25,1)', fill:'forwards' }
-          );
-          anim.onfinish = ()=>{ wrap.style.transform = `scale(${targetScale})`; resolve(); };
-        });
-      }
-      function getCurrentScale(){
-        const m = /scale\(([^)]+)\)/.exec(wrap.style.transform||'');
-        return m ? parseFloat(m[1]) : base;
-      }
+      const peak = Math.min(base*inhaleMul, maxBaseDyn*inhaleMul);
+      setPhase(`Inhale <b>4</b>`);   await animateToScale(peak, inhale);
+      setPhase(`Hold <b>7</b>`);     await animateToScale(peak, hold);
+      setPhase(`Exhale <b>8</b>`);   await animateToScale(base, exhale);
+    }
 
-      async function doOne478(){
-        // clamp base
-        base = Math.min(base, bloomMaxDyn);
-        wrap.style.setProperty('--base', base.toFixed(3));
-        updateMeter();
+    async function cycle(){
+      if(!running) return;
+      await doOne478(); if(!running) return;
 
-        // Inhale
-        const inhalePeak = Math.min(base*inhaleMul, bloomMaxDyn*inhaleMul);
-        setPhase(`Inhale <b>4</b>`);
-        await animateToScale(inhalePeak, inhale);
+      // selesai satu kitaran
+      breathCount += 1;
+      countNumEl.textContent = String(breathCount);
 
-        // Hold
-        setPhase(`Hold <b>7</b>`);
-        await animateToScale(inhalePeak, hold);
+      const left = MAX_BREATHS - breathCount;
+      if(left === 2) setAffirm("Good — 2 breaths to go.");
+      else if(left === 1) setAffirm("Nice — 1 breath to go.");
+      else if(left === 0) setAffirm("Well done. You can continue your work now.");
 
-        // Exhale (kembali ke base, stabil)
-        setPhase(`Exhale <b>8</b>`);
-        await animateToScale(base, exhale);
-      }
+      const progress = breathCount / MAX_BREATHS; // 1/3, 2/3, 1
+      setGrowth(progress);
 
-      async function cycle(){
-        if(!running) return;
+      base = Math.min(maxBaseDyn, base + bloomStep);
+      wrap.style.setProperty('--base', base.toFixed(3));
+      updateMeter();
 
-        await doOne478();
-        if(!running) return;
+      // pulse kecil
+      wrap.animate(
+        [{ transform:`scale(${base})` }, { transform:`scale(${base*1.02})` }, { transform:`scale(${base})` }],
+        { duration:480, easing:'ease-in-out', fill:'forwards' }
+      );
 
-        // Tamat satu kitaran
-        breathCount += 1;
-        countNumEl.textContent = String(breathCount);
+      if(breathCount >= MAX_BREATHS){ finishSession(); return; }
+      cycle();
+    }
 
-        // mesej kemajuan
-        const left = MAX_BREATHS - breathCount;
-        if(left === 2) setAffirm("Good — 2 breaths to go.");
-        else if(left === 1) setAffirm("Nice — 1 breath to go.");
-        else if(left === 0) setAffirm("Well done. You can continue your work now.");
+    function start(){
+      running = true;
+      breathCount = 0;
+      countNumEl.textContent = "0";
+      setPhase("Take a short rest. Let’s have three good breaths.");
+      setAffirm("");
+      startBtn.textContent = "Restart";
+      pauseBtn.disabled = false;
+      setGrowth(0);            // seed view
+      wrap.style.transform = `scale(${base})`;
+      cycle();
+    }
+    function pause(){
+      running = false;
+      pauseBtn.disabled = true;
+      setPhase("Paused");
+      wrap.getAnimations().forEach(a => a.cancel());
+      wrap.style.transform = `scale(${base})`;
+    }
+    function resetAll(){
+      pause();
+      base = 0.8;
+      wrap.style.setProperty('--base', base.toFixed(3));
+      wrap.style.transform = `scale(${base})`;
+      updateMeter();
+      setPhase("Take a short rest. Let’s have three good breaths.");
+      setAffirm("");
+      breathCount = 0;
+      countNumEl.textContent = "0";
+      startBtn.textContent = "Start";
+      setGrowth(0);
+      card.classList.remove('fresh');
+    }
+    function finishSession(){
+      running = false;
+      pauseBtn.disabled = true;
+      setPhase("Session complete");
+      wrap.getAnimations().forEach(a => a.cancel());
+      wrap.style.transform = `scale(${base})`;
+    }
 
-        // naikkan base kecil, hormat had
-        base = Math.min(bloomMaxDyn, base + bloomStep);
-        wrap.style.setProperty('--base', base.toFixed(3));
-        updateMeter();
+    startBtn.addEventListener('click', ()=>{ pause(); setTimeout(start, 160); });
+    pauseBtn.addEventListener('click', pause);
+    resetBtn.addEventListener('click', resetAll);
 
-        // pulse kecil
-        wrap.animate(
-          [{ transform:`scale(${base})` }, { transform:`scale(${base*1.025})` }, { transform:`scale(${base})` }],
-          { duration: 520, easing: 'ease-in-out', fill:'forwards' }
-        );
-
-        // hentikan bila capai 3
-        if(breathCount >= MAX_BREATHS){
-          finishSession();
-          return;
-        }
-        // sambung
-        cycle();
-      }
-
-      function start(){
-        // reset kiraan & mesej
-        running = true;
-        breathCount = 0;
-        countNumEl.textContent = "0";
-        setPhase("Take a short rest. Let’s have three good breaths.");
-        setAffirm("");
-        startBtn.textContent = "Restart";
-        pauseBtn.disabled = false;
-
-        // selaraskan transform
-        wrap.style.transform = `scale(${base})`;
-        cycle();
-      }
-      function pause(){
-        running = false;
-        pauseBtn.disabled = true;
-        setPhase("Paused");
-        wrap.getAnimations().forEach(a => a.cancel());
-        wrap.style.transform = `scale(${base})`;
-      }
-      function resetAll(){
-        pause();
-        base = 0.8;
-        wrap.style.setProperty('--base', base.toFixed(3));
-        wrap.style.transform = `scale(${base})`;
-        updateMeter();
-        setPhase("Take a short rest. Let’s have three good breaths.");
-        setAffirm("");
-        breathCount = 0;
-        countNumEl.textContent = "0";
-        startBtn.textContent = "Start";
-      }
-      function finishSession(){
-        running = false;
-        pauseBtn.disabled = true;
-        setPhase("Session complete");
-        wrap.getAnimations().forEach(a => a.cancel());
-        wrap.style.transform = `scale(${base})`;
-      }
-
-      startBtn.addEventListener('click', ()=>{ pause(); setTimeout(start, 180); });
-      pauseBtn.addEventListener('click', pause);
-      resetBtn.addEventListener('click', resetAll);
-
-      // Fokus awal
-      window.addEventListener('load', ()=> startBtn.focus(), {once:true});
-    </script>
-  </body>
+    window.addEventListener('load', ()=> startBtn.focus(), {once:true});
+  </script>
+</body>
 </html>
