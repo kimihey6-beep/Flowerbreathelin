@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>For Fadhlin — Breathe & Bloom (Fast)</title>
+    <title>For Fadhlin — Breathe & Bloom (Fixed)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
       .card{
         position:relative; width:min(840px, 92vw); border-radius:22px;
         background:#fff; box-shadow:0 16px 40px rgba(0,0,0,.12);
-        padding:28px 18px 28px; overflow:hidden;
+        padding:28px 18px 22px; overflow:hidden;
       }
 
-      /* butterflies latar lembut */
+      /* butterflies latar lembut (optional kekalkan) */
       .butterflies{position:absolute; inset:0; pointer-events:none; z-index:0}
       .butterfly{
-        position:absolute; width:22px; height:16px; opacity:.9;
+        position:absolute; width:22px; height:16px; opacity:.85;
         top:60%; left:-10%;
         animation:fly linear infinite;
       }
@@ -43,7 +43,7 @@
       }
       .butterfly::before{ left:0; transform-origin:right center; animation:wingL .55s ease-in-out infinite }
       .butterfly::after { right:0; transform-origin:left center;  animation:wingR .55s ease-in-out infinite }
-      .butterfly span{ position:absolute; left:9px; top:6px; width:4px; height:6px; background:var(--purple-dark); border-radius:2px }
+      .butterfly span{ position:absolute; left:9px; top:6px; width:4px; height:6px; background:#6a2fd1; border-radius:2px }
       @keyframes wingL{ 0%,100%{transform:rotate(18deg)} 50%{transform:rotate(2deg)} }
       @keyframes wingR{ 0%,100%{transform:rotate(-18deg)} 50%{transform:rotate(-2deg)} }
       @keyframes fly{ 0%{transform:translate(-12vw, 12vh)} 100%{transform:translate(110vw, -28vh)} }
@@ -65,13 +65,15 @@
 
       .zone{
         position:relative; display:grid; place-items:center;
-        height:min(56vh, 520px); margin:6px 0 8px; z-index:1;
+        height:min(54vh, 500px); margin:6px 0 8px; z-index:1;
+        padding:4px; /* buffer kecil supaya tak sentuh tepi */
       }
 
       /* bunga */
       .flowerWrap{
         transform:scale(var(--base, .8)); transition:transform .8s cubic-bezier(.25,.8,.25,1);
         filter:drop-shadow(0 14px 28px rgba(155,93,229,.22));
+        will-change:transform;
       }
       .flower{
         width:min(360px, 70vmin); aspect-ratio:1/1; position:relative;
@@ -98,7 +100,7 @@
       }
       .ring{ position:absolute; inset:6%; border-radius:50%; border:2px dashed rgba(123,58,215,.2) }
 
-      /* teks fasa & affirm */
+      /* teks fasa & afirmasi */
       .phase{ margin-top:10px; text-align:center; font-weight:700; }
       .phase b{ color:var(--purple-dark) }
       .affirm{ text-align:center; font-size:14px; color:#4a4a4a; margin-top:6px; min-height:1.5em }
@@ -118,7 +120,6 @@
         display:flex; gap:14px; justify-content:center; align-items:center;
         margin-top:6px; flex-wrap:wrap; color:#6a6a6a; font-size:12px;
       }
-      .meter{ }
       .count b{ color:var(--pink) }
 
       @media (max-width:520px){
@@ -138,9 +139,9 @@
 
         <h1 class="title">Semangat Fadhlin</h1>
         <p class="sub">Be happy</p>
-        <p class="hint">Tap <b>Start</b>, ikut nafas <b>4-7-8</b>. Setiap kitaran, bunga <b>mekar lebih cepat</b>. 🌸</p>
+        <p class="hint">Tap <b>Start</b>, ikut nafas <b>4-7-8</b>. Bunga mekar makin besar tapi tak tutup tulisan. 🌸</p>
 
-        <div class="zone">
+        <div class="zone" id="zone">
           <div class="flowerWrap" id="flowerWrap" style="--base:.8">
             <div class="flower" id="flower" aria-label="Breathing flower">
               <!-- 8 kelopak -->
@@ -167,139 +168,93 @@
           <button class="btn secondary" id="resetBtn">Reset Bloom</button>
         </div>
         <div class="meters">
-          <div class="meter" id="meter">Bloom level: 0%</div>
           <div class="count" id="count">478 breaths: <b>0</b></div>
+          <div class="count" id="meter">Bloom level: 0%</div>
         </div>
       </div>
     </div>
 
     <script>
+      const zone = document.getElementById('zone');
       const wrap = document.getElementById('flowerWrap');
       const phaseEl = document.getElementById('phase');
       const affirmEl = document.getElementById('affirm');
       const startBtn = document.getElementById('startBtn');
       const pauseBtn = document.getElementById('pauseBtn');
       const resetBtn = document.getElementById('resetBtn');
-      const meter = document.getElementById('meter');
+      const meterEl = document.getElementById('meter');
       const countEl = document.getElementById('count').querySelector('b');
 
-      // Affirmations
+      // Affirmations pendek (boleh kekalkan/kembang)
       const affirmations = [
-        "Fadhlin, you are loved — always.",
-        "Small steps still move you forward.",
-        "It’s okay to pause. You’re doing your best.",
-        "Your smile is someone’s sunshine today.",
-        "You’ve handled tough days before — you can do it again.",
-        "Progress, not perfection. Proud of you.",
-        "You deserve gentleness, especially from yourself.",
-        "One kind thought can change the whole day."
+        "Inhale calm… exhale worry.",
+        "You’re safe here.",
+        "Soft day, slow steps.",
+        "Be gentle with yourself.",
+        "Tiny steps still count."
       ];
       let idx = 0;
 
-      // State & timing
+      // Timing 4-7-8
+      const inhale = 4000, hold = 7000, exhale = 8000;
+
+      // Bloom cumulative
+      let base = 0.8;                 // skala asas
+      let bloomMaxDyn = 1.6;          // akan dikira dinamik ikut skrin
+      const inhaleMul = 1.15;         // kembang ketika inhale
+      const bloomStep = 0.10;         // naik selepas setiap kitaran
+      let breathCount = 0;
+
+      // Running state
       let running = false;
-      let timer;
-      const inhale = 4000, hold = 7000, exhale = 8000; // 4-7-8
 
-      // Bloom cumulative (faster)
-      let base = 0.8;               // scale asas
-      const bloomStep = 0.12;       // ↑ lebih cepat setiap kitaran
-      const bloomMax  = 2.0;        // had maks lebih besar
-      let breathCount = 0;          // kaunter 4-7-8
+      // ===== Dinamik: kira had maksimum supaya tak tutup tulisan
+      function computeMaxBloom(){
+        // ukuran fizikal flower asal (tanpa skala)
+        const flower = document.getElementById('flower');
+        const flowerW = flower.offsetWidth;   // px, pada scale 1
+        const flowerH = flower.offsetHeight;  // px
 
+        const pad = 12; // buffer agar tidak sentuh tepi/atas bawah
+        const zoneW = zone.clientWidth - pad*2;
+        const zoneH = zone.clientHeight - pad*2;
+
+        // ketika puncak inhale, skala = base * inhaleMul. Kita nak puncak <= muat 90% zon (kecilkan lagi).
+        const targetFit = 0.9 * Math.min(zoneW/flowerW, zoneH/flowerH);
+        // had skala asas (base) supaya base*inhaleMul <= targetFit
+        const maxBaseByFit = targetFit / inhaleMul;
+
+        // clamp minimum munasabah (≥0.7) dan maksimum (contoh 2.2)
+        bloomMaxDyn = Math.max(0.7, Math.min(2.2, maxBaseByFit));
+        // Jika base melebihi had, turunkan sedikit agar exhale stabil
+        if(base > bloomMaxDyn) {
+          base = bloomMaxDyn;
+          wrap.style.setProperty('--base', base.toFixed(3));
+          updateMeter();
+        }
+      }
+
+      // panggil awal & bila resize
+      new ResizeObserver(computeMaxBloom).observe(zone);
+      window.addEventListener('load', computeMaxBloom);
+
+      // ===== UI helpers
+      function setPhase(txt){ phaseEl.innerHTML = txt; }
       function updateMeter(){
-        const pct = Math.round(((base - 0.8) / (bloomMax - 0.8)) * 100);
-        meter.textContent = `Bloom level: ${Math.max(0, Math.min(100, pct))}%`;
+        const pct = Math.round(((base - 0.8) / (bloomMaxDyn - 0.8)) * 100);
+        meterEl.textContent = `Bloom level: ${Math.max(0, Math.min(100, pct))}%`;
       }
       updateMeter();
 
-      function setPhase(txt){ phaseEl.innerHTML = txt; }
-
-      function bloomPhase(fromMul, toMul, dur){
-        const from = base * fromMul;
-        const to   = base * toMul;
-        wrap.animate(
-          [{ transform:`scale(${from})` }, { transform:`scale(${to})` }],
-          { duration: dur, easing: 'cubic-bezier(.25,.8,.25,1)', fill:'forwards' }
-        );
+      // Animasi skala berasaskan WAAPI, dipromisekan supaya urutan solid
+      function animateToScale(targetScale, duration){
+        return new Promise(resolve=>{
+          const anim = wrap.animate(
+            [{ transform:`scale(${getCurrentScale()})` }, { transform:`scale(${targetScale})` }],
+            { duration, easing: 'cubic-bezier(.25,.8,.25,1)', fill:'forwards' }
+          );
+          anim.onfinish = ()=>{ wrap.style.transform = `scale(${targetScale})`; resolve(); };
+        });
       }
-
-      function cycle(){
-        if(!running) return;
-
-        // Inhale 4s (kembang)
-        setPhase(`Inhale <b>4</b>`);
-        bloomPhase(1.00, 1.20, inhale);
-
-        timer = setTimeout(()=>{
-          if(!running) return;
-          // Hold 7s
-          setPhase(`Hold <b>7</b>`);
-          bloomPhase(1.20, 1.20, hold);
-
-          timer = setTimeout(()=>{
-            if(!running) return;
-            // Exhale 8s (kuncup lembut)
-            setPhase(`Exhale <b>8</b>`);
-            bloomPhase(1.20, 0.95, exhale);
-
-            // affirmation pada permulaan exhale
-            affirmEl.textContent = affirmations[idx % affirmations.length];
-            idx++;
-
-            // Tamat satu kitaran → upgrade bloom + kaunter
-            timer = setTimeout(()=>{
-              if(!running) return;
-
-              // naikkan base dan clamp
-              base = Math.min(bloomMax, base + bloomStep);
-              wrap.style.setProperty('--base', base.toFixed(3));
-              updateMeter();
-
-              // ++ kaunter 4-7-8
-              breathCount += 1;
-              countEl.textContent = String(breathCount);
-
-              // pulse kecil meraikan pertumbuhan
-              wrap.animate(
-                [{ transform:`scale(${base})` }, { transform:`scale(${base*1.03})` }, { transform:`scale(${base})` }],
-                { duration: 520, easing: 'ease-in-out', fill:'forwards' }
-              );
-
-              cycle(); // sambung
-            }, 50);
-          }, hold);
-        }, inhale);
-      }
-
-      function start(){
-        if(running) return;
-        running = true;
-        startBtn.textContent = "Restart";
-        pauseBtn.disabled = false;
-        cycle();
-      }
-      function pause(){
-        running = false;
-        clearTimeout(timer);
-        setPhase("Paused");
-      }
-      function resetBloom(){
-        pause();
-        base = 0.8;
-        wrap.style.setProperty('--base', base.toFixed(3));
-        updateMeter();
-        affirmEl.textContent = "";
-        setPhase("Ready?");
-        breathCount = 0;
-        countEl.textContent = "0";
-      }
-
-      startBtn.addEventListener('click', ()=>{ pause(); setPhase("Ready?"); affirmEl.textContent=""; setTimeout(start, 200); });
-      pauseBtn.addEventListener('click', pause);
-      resetBtn.addEventListener('click', resetBloom);
-
-      window.addEventListener('load', ()=> startBtn.focus(), {once:true});
-    </script>
-  </body>
-</html>
+      function getCurrentScale(){
+        // baca terus daripada style var --base (sebab transform final sentiasa set ke base/current)
